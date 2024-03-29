@@ -754,7 +754,7 @@ BOOL isExiting = FALSE;
     self.spinner.userInteractionEnabled = NO;
     [self.spinner stopAnimating];
     
-    self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(close)];
+    self.closeButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(closeButtonClicked:)];
     self.closeButton.enabled = YES;
     
     UIBarButtonItem* flexibleSpaceButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
@@ -867,7 +867,7 @@ BOOL isExiting = FALSE;
     // but, if you want to set this yourself, knock yourself out (we can't set the title for a system Done button, so we have to create a new one)
     self.closeButton = nil;
     // Initialize with title if title is set, otherwise the title will be 'Done' localized
-    self.closeButton = title != nil ? [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(close)] : [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(close)];
+    self.closeButton = title != nil ? [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:self action:@selector(closeButtonClicked:)] : [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(closeButtonClicked:)];
     self.closeButton.enabled = YES;
     // If color on closebutton is requested then initialize with that that color, otherwise use initialize with default
     self.closeButton.tintColor = colorString != nil ? [self colorFromHexString:colorString] : [UIColor colorWithRed:60.0 / 255.0 green:136.0 / 255.0 blue:230.0 / 255.0 alpha:1];
@@ -1021,6 +1021,34 @@ BOOL isExiting = FALSE;
 
 - (BOOL)prefersStatusBarHidden {
     return NO;
+}
+
+- (void)closeButtonClicked:(UIBarButtonItem *)sender {
+    // Handle the button click event
+    NSLog(@"Close Button Clicked!");
+    // Perform any additional actions or logic here
+    
+    //Phu: custom the popup confirm before exit the IAB ------>
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Exit" message:@"You are about to exit, are you sure?" preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        // Handle cancel action
+    }];
+
+    UIAlertAction *confirmAction = [UIAlertAction actionWithTitle:@"Yes" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        // Handle confirm action
+        [self close];
+    }];
+
+    // Customize the Confirm button's color
+    // [confirmAction setValue:[UIColor blueColor] forKey:@"titleTextColor"];
+    [cancelAction setValue:[UIColor redColor] forKey:@"titleTextColor"];
+
+    [alertController addAction:cancelAction];
+    [alertController addAction:confirmAction];
+
+    [self presentViewController:alertController animated:YES completion:nil];
+    // end ------>
 }
 
 - (void)close
