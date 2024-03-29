@@ -771,7 +771,25 @@ public class InAppBrowser extends CordovaPlugin {
                 _close.setId(Integer.valueOf(id));
                 _close.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        closeDialog();
+                        // closeDialog();
+
+                        // PHU: custom the popup confirm before exit the IAB ------>
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(cordova.getActivity())
+                        .setTitle("Exit")
+                        .setMessage("You are about to exit, are you sure?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog,int which){
+                                closeDialog();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+                            public void onClick(DialogInterface dialog,int which){
+                                dialog.cancel();
+                            }
+                        });
+                        alertDialogBuilder.create();
+                        alertDialogBuilder.show();
+                        // ------->
                     }
                 });
 
